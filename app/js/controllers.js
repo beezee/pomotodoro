@@ -24,6 +24,8 @@ angular.module('pomotodo.controllers', []).
         $scope.activeTodo = todo;
       };
 
+      storage.bind($scope, 'activeTodo');
+
       $scope.$watch(function() { return $scope.todoService.todos; }, function(todos) {
         if ($scope.activeTodo
               && !_.find(todos, 
