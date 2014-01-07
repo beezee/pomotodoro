@@ -1,24 +1,90 @@
 <!doctype html>
-<html lang="en" ng-app="myApp">
+<html lang="en" ng-app="pomotodo">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>Pomotodoro</title>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/view1">view1</a></li>
-    <li><a href="#/view2">view2</a></li>
-  </ul>
-
-  <div ng-view></div>
-
-  <div>Angular seed app: v<span app-version></span></div>
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-  -->
-  <script src="lib/angular/angular.js"></script>
+  <div class="container" style="margin-top:40px;" ng-controller="todoController">
+    <div class="row">
+      <div class="col-md-4">
+        <ul ng-show="todoService.todos.length > 0" ng-mask ng-model="todoService.todos" 
+            ui-sortable id="todos" style="list-style:none;">
+          <li class="row" ng-repeat="todo in todoService.todos">
+            <div class="col-md-8" ng-class="{'completed-task': todo.complete}">
+              {{ todo.description }}
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" class="pull-right" style="margin-top:2px;margin-left:4px;"
+                ng-checked="todo.complete" ng-click="todoService.remove(todo)" />
+              <i class="pull-right glyphicon glyphicon-edit" style="cursor:pointer;"
+                ng-click="activateTodo(todo)"></i>
+            </div>
+            <hr style="clear:both;"/>
+          </li>
+        </ul>
+        <ul style="list-style:none;">
+          <li>
+            <form ng-submit="addTodo()">
+              <input class="form-control" ng-model="newTodo" type="text" placeholder="New todo..." />
+            </form>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-8">
+        <ul style="list-style:none;">
+          <div class="row" id="clock">
+            <h2>{{ timer.timeRemaining | MMSS }}</h2>
+            <h4>Pomodoro #{{ timer.currentPomodoroCount }}</h4>
+            <h5 ng-show="timer.running()">On {{ timer.currentState }}</h5>
+            <input type="button" class="btn btn-warning" ng-click="timer.toggle()"
+                value="{{ timer.running() && 'Pause' || 'Start' }}" />
+            <input type="button" class="btn btn-warnning" ng-click="timer.reset()"
+                value="Reset" ng-show="timer.currentState == 'Pomodoro'"
+                  ng-disabled="timer.currentState != 'Pomodoro'" />
+          </div>
+        </ul>
+        <div ng-show="activeTodo" class="row" id="active-todo">
+          <ul style="list-style:none;">
+            <li>
+              <h3>{{ activeTodo.description|truncate:62 }}</h3> 
+            </li>
+          </ul>
+          <ul ui-sortable ng-model="activeTodo.comments" id="todo-comments" 
+              style="list-style:none;">
+            <li class="row" ng-repeat="comment in activeTodo.comments">
+              <div class="col-md-8">
+                {{ comment }}
+              </div>
+              <div class="col-md-4">
+                <i class="pull-right glyphicon glyphicon-remove" style="cursor:pointer;"
+                  ng-click="activeTodo.removeComment(comment)"></i>
+              </div>
+              <hr style="clear:both;"/>
+            </li>
+          </ul>
+          <ul style="list-style:none;">
+            <li>
+              <form ng-submit="newComment = '' || activeTodo.addComment(newComment)">
+                <input class="form-control" ng-model="newComment" type="text" 
+                  placeholder="New Note..." />
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+  <script src="js/sortable.js"></script>
+  <script src="lib/angular/angular-cookies.min.js"></script>
+  <script src="js/angularLocalStorage.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
   <script src="lib/angular/angular-route.js"></script>
   <script src="js/app.js"></script>
   <script src="js/services.js"></script>
