@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-md-4">
         <ul ng-show="todoService.todos.length > 0" ng-mask ng-model="todoService.todos" 
-            ui-sortable id="todos" style="list-style:none;">
+            ui-sortable="{handle: '.move'}" id="todos" style="list-style:none;">
           <li class="row" ng-repeat="todo in todoService.todos">
             <div class="col-md-8" ng-class="{'completed-task': todo.complete}">
               {{ todo.description }}
@@ -19,6 +19,8 @@
             <div class="col-md-4">
               <input type="checkbox" class="pull-right" style="margin-top:2px;margin-left:4px;"
                 ng-checked="todo.complete" ng-click="todoService.remove(todo)" />
+              <i class="pull-right glyphicon glyphicon-move move" 
+                  style="margin-left:4px;cursor:pointer;"></i>
               <i class="pull-right glyphicon glyphicon-edit" style="cursor:pointer;"
                 ng-click="activateTodo(todo)"></i>
             </div>
@@ -52,13 +54,15 @@
               <h3>{{ activeTodo.description|truncate:62 }}</h3> 
             </li>
           </ul>
-          <ul ui-sortable ng-model="activeTodo.comments" id="todo-comments" 
+          <ul ui-sortable="{handle: '.move'}" ng-model="activeTodo.comments" id="todo-comments" 
               style="list-style:none;">
             <li class="row" ng-repeat="comment in activeTodo.comments">
               <div class="col-md-8">
                 {{ comment }}
               </div>
               <div class="col-md-4">
+                <i class="pull-right glyphicon glyphicon-move move" 
+                  style="cursor:pointer;margin-left:4px;"></i>
                 <i class="pull-right glyphicon glyphicon-remove" style="cursor:pointer;"
                   ng-click="activeTodo.removeComment(comment)"></i>
               </div>
